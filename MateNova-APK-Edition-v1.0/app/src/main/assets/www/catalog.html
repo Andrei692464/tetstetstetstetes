@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catalog Viva — MateNova</title>
+<meta name="description" content="Intră în Catalog Viva și ține evidența notelor tale.">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0610">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.salut{font-size:1.05rem;color:var(--muted);margin:0 0 4px}
+.tabs{display:inline-flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:6px;margin:6px 0 22px}
+.tab{font:inherit;font-weight:700;font-size:.95rem;cursor:pointer;border:none;border-radius:12px;padding:11px 20px;background:transparent;color:var(--muted);transition:.15s}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected=true]{background:linear-gradient(135deg,var(--p),var(--p-dark));color:#fff;box-shadow:0 6px 20px -6px rgba(var(--pr),.7)}
+
+/* fereastra cu Catalog Viva */
+.fereastra{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 0 60px -20px rgba(var(--pr),.6)}
+.fereastra:fullscreen{border-radius:0;display:flex;flex-direction:column}
+.fereastra:fullscreen .corp-f{flex:1}
+.bara-f{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--line)}
+.puncte-f{display:flex;gap:6px}.puncte-f i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+.puncte-f i:nth-child(1){background:#fb7185}.puncte-f i:nth-child(2){background:#fbbf24}.puncte-f i:nth-child(3){background:#34d399}
+.titlu-f{flex:1;font-size:.85rem;font-weight:700;color:var(--muted);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mic{font:inherit;font-weight:700;font-size:.82rem;cursor:pointer;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 12px}
+.mic:hover{border-color:var(--p);background:var(--p-soft)}
+.corp-f{position:relative;height:min(78vh,720px);min-height:460px;background:#fff}
+.corp-f iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+
+/* încărcare */
+.incarcare{position:absolute;inset:0;z-index:2;display:grid;place-content:center;justify-items:center;gap:14px;text-align:center;padding:24px;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(var(--pr2),.35),transparent 70%),var(--bg);transition:opacity .5s}
+.incarcare.gata{opacity:0;pointer-events:none}
+.cerc{position:relative;width:132px;height:132px}
+.cerc svg{width:100%;height:100%;transform:rotate(-90deg)}
+.cerc .fond{fill:none;stroke:var(--line);stroke-width:9}
+.cerc .arc{fill:none;stroke:url(#grad);stroke-width:9;stroke-linecap:round;stroke-dasharray:326.7;stroke-dashoffset:326.7;transition:stroke-dashoffset .4s linear}
+.cerc .rot{position:absolute;inset:0;animation:rot 1.4s linear infinite}
+.cerc .rot::after{content:"";position:absolute;top:2px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--p-light);box-shadow:0 0 14px 3px rgba(var(--pr),.9)}
+.cerc b{position:absolute;inset:0;display:grid;place-items:center;font-family:"Bricolage Grotesque",sans-serif;font-size:1.7rem}
+@keyframes rot{to{transform:rotate(360deg)}}
+.incarcare h3{margin:0;font-size:1.25rem}
+.incarcare p{margin:0;color:var(--muted);max-width:36ch}
+.timp{font-weight:700;color:var(--ink)!important}
+.ajutor{padding:12px 16px;font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ajutor button{font:inherit;font-weight:700;font-size:.85rem;background:none;border:none;color:var(--p);cursor:pointer;padding:0;text-decoration:underline}
+.ajutor-det{padding:0 16px 14px;font-size:.88rem;color:var(--muted)}
+.ajutor-det a{color:var(--p);font-weight:700}
+
+/* note */
+.stat-rand{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:22px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
+.stat b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:2rem;line-height:1.1;color:var(--p)}
+.stat span{font-size:.85rem;color:var(--muted)}
+.stat.mare{background:linear-gradient(145deg,var(--surface2),var(--surface));border-color:rgba(var(--pr),.5)}
+.jurnal{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:22px;align-items:start}
+@media(max-width:860px){.jurnal{grid-template-columns:1fr}}
+.panou-nota{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.panou-nota h3{margin:0 0 14px;font-size:1.15rem}
+.rand{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.camp select,.camp input[type=number],.camp input[type=date]{width:100%;font:inherit;color:inherit;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg)}
+.camp select:focus,.camp input:focus{outline:none;border-color:var(--p);box-shadow:0 0 0 4px var(--p-soft)}
+.materie{border:1px solid var(--line);border-radius:16px;margin-bottom:12px;overflow:hidden;background:var(--surface)}
+.materie header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface2)}
+.materie header h4{margin:0;font-family:"Bricolage Grotesque",sans-serif;font-size:1.05rem;flex:1}
+.materie header .md{font-weight:800;color:var(--p);background:var(--p-soft);padding:3px 11px;border-radius:999px;font-size:.85rem}
+.note{display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px}
+.nota{display:inline-flex;align-items:center;gap:6px;background:var(--p-soft);border:1px solid rgba(var(--pr),.35);border-radius:12px;padding:5px 6px 5px 12px;font-weight:800;font-size:1.05rem}
+.nota small{font-weight:400;color:var(--muted);font-size:.72rem}
+.nota button{border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:.8rem;padding:2px 6px;border-radius:6px}
+.nota button:hover{background:var(--bad);color:#3b0a14}
+.nota.f{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.5)}
+.nota.mica{border-color:rgba(251,113,133,.5);background:rgba(251,113,133,.12)}
+.import{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+.import h3{margin:0 0 6px;font-size:1.05rem}
+.import p{margin:0 0 10px;font-size:.85rem;color:var(--muted)}
+.import textarea{width:100%;min-height:100px;font:inherit;font-size:.85rem;color:inherit;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);resize:vertical}
+.avert{margin-top:14px;font-size:.82rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.cerc .rot{animation:none}}
+</style>
+<script src="boot.js"></script>
+<script src="tema.js"></script>
+</head>
+<body>
+<header class="sus">
+  <div class="wrap bara">
+    <a class="logo" href="index.html"><i>✨</i>MateNova</a>
+    <span class="clasa">clasa a V-a</span>
+    <button class="chip" id="btnNume" type="button" title="Schimbă numele"></button>
+    <nav><a href="orar.html">Orar</a><a href="teme.html">Teme</a><a href="fise.html">Fișe</a><a href="proiecte.html">Proiecte</a><a href="quiz.html">Quiz</a><a href="jocuri.html">Jocuri</a><a href="catalog.html" aria-current="page">Catalog</a></nav>
+  </div>
+</header>
+<main class="wrap">
+<section>
+  <div class="cap"><p class="salut" id="salut">Salut!</p><h2>Catalog Viva</h2></div>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tabCatalog" aria-selected="true" aria-controls="pCatalog" type="button">🎓 Catalogul</button>
+    <button class="tab" role="tab" id="tabNote" aria-selected="false" aria-controls="pNote" type="button">📊 Notele mele</button>
+  </div>
+
+  <div id="pCatalog" role="tabpanel">
+    <div class="fereastra" id="fereastra">
+      <div class="bara-f">
+        <div class="puncte-f"><i></i><i></i><i></i></div>
+        <div class="titlu-f">Catalog Viva</div>
+        <button class="mic" id="btnReincarca" type="button">⟳ Reîncarcă</button>
+        <button class="mic" id="btnMare" type="button">⛶ Ecran mare</button>
+      </div>
+      <div class="corp-f">
+        <div class="incarcare" id="incarcare" role="status" aria-live="polite">
+          <div class="cerc">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--p-light)"/><stop offset="1" style="stop-color:var(--p-dark)"/></linearGradient></defs><circle class="fond" cx="60" cy="60" r="52"/><circle class="arc" id="arc" cx="60" cy="60" r="52"/></svg>
+            <div class="rot" aria-hidden="true"></div>
+            <b id="procent">0%</b>
+          </div>
+          <h3 id="titluInc">Se deschide Catalogul…</h3>
+          <p class="timp" id="timpInc">Mai durează aproximativ 8 secunde</p>
+          <p id="subInc">Prima încărcare poate dura puțin mai mult.</p>
+        </div>
+        <iframe id="iframeViva" title="Catalog Viva" referrerpolicy="no-referrer" allow="fullscreen"></iframe>
+      </div>
+      <div class="ajutor">
+        <span>Probleme cu încărcarea sau cu intrarea în cont?</span>
+        <button id="btnAjutor" type="button">Vezi ce poți face</button>
+      </div>
+      <div class="ajutor-det" id="ajutorDet" hidden>
+        Apasă <b>⟳ Reîncarcă</b>. Dacă vezi doar un cadru gol sau un mesaj de eroare, browserul sau Viva nu permit afișarea catalogului în această pagină.
+        În acest caz poți deschide catalogul <a id="linkViva" href="#" target="_blank" rel="noopener noreferrer">într-o filă separată</a>.
+      </div>
+    </div>
+  </div>
+
+  <div id="pNote" role="tabpanel" hidden>
+    <div class="stat-rand">
+      <div class="stat mare"><b id="medieGen">–</b><span>media generală (fără Purtare)</span></div>
+      <div class="stat"><b id="nrNote">0</b><span>note adăugate</span></div>
+      <div class="stat"><b id="cea">–</b><span id="ceaEt">cea mai bună materie</span></div>
+    </div>
+    <div class="jurnal">
+      <div class="panou-nota">
+        <h3>Adaugă o notă</h3>
+        <form id="formNota" novalidate>
+          <label class="camp"><span>Materia</span><select id="materie"></select></label>
+          <div class="rand">
+            <label class="camp"><span>Nota (1–10)</span><input id="nota" type="number" min="1" max="10" step="1" inputmode="numeric" required></label>
+            <label class="camp"><span>Data <small>(opțional)</small></span><input id="dataNota" type="date"></label>
+          </div>
+          <div class="raport-mesaj" id="mesajNota" role="status" aria-live="polite"></div>
+          <div class="butoane"><button class="btn" type="submit">Adaugă nota</button></div>
+        </form>
+        <div class="import">
+          <h3>⚡ Importă toate notele deodată</h3>
+          <p>În Catalog, deschide <b>Istoricul meu</b>, selectează tot textul (Ctrl+A), copiază-l (Ctrl+C) și lipește-l aici. Notele sunt citite în browserul tău și nu se trimit nicăieri.</p>
+          <textarea id="textIstoric" placeholder="Lipește aici textul copiat din Istoricul meu…" aria-label="Text din Istoricul meu"></textarea>
+          <div class="raport-mesaj" id="mesajImport" role="status" aria-live="polite"></div>
+          <div class="butoane"><button class="btn gol" id="btnImport" type="button">Importă notele</button></div>
+        </div>
+        <p class="avert">Aceasta este doar evidența ta personală, salvată pe acest dispozitiv. Notele oficiale sunt cele din Catalog Viva.</p>
+      </div>
+      <div id="listaNote"></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <span>MateNova — matematică pentru clasa a V-a.</span>
+    <a href="index.html">← pagina principală</a>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="common.js"></script>
+<script>
+const CATALOG_VIVA_URL = "https://catalog.viva-scim.ro/#/";
+document.getElementById("linkViva").href = CATALOG_VIVA_URL;
+
+/* ===== salut ===== */
+(function(){
+  const n = (numeElev()||"").split(" ")[0];
+  document.getElementById("salut").textContent = n ? "Salut, " + n + "! 👋" : "Salut! 👋";
+})();
+
+/* ===== taburi ===== */
+const tabC = document.getElementById("tabCatalog"), tabN = document.getElementById("tabNote");
+function tab(c){
+  tabC.setAttribute("aria-selected", c); tabN.setAttribute("aria-selected", !c);
+  document.getElementById("pCatalog").hidden = !c; document.getElementById("pNote").hidden = c;
+}
+tabC.addEventListener("click", ()=>tab(true));
+tabN.addEventListener("click", ()=>tab(false));
+
+/* ===== încărcare Catalog în pagină ===== */
+const iframe = document.getElementById("iframeViva"), inc = document.getElementById("incarcare");
+const arc = document.getElementById("arc"), procent = document.getElementById("procent");
+const titluInc = document.getElementById("titluInc"), timpInc = document.getElementById("timpInc"), subInc = document.getElementById("subInc");
+const LUNG = 326.7;
+let t0 = 0, cronometru = null, terminat = false;
+
+function estimare(){ const v = Number(ls("viva_durata")); return (v>=1500 && v<=40000) ? v : 8000; }
+function seteazaArc(p){ arc.style.strokeDashoffset = LUNG * (1 - p); procent.textContent = Math.round(p*100) + "%"; }
+
+function porneste(){
+  terminat = false; t0 = Date.now();
+  inc.classList.remove("gata"); inc.style.display = "";
+  titluInc.textContent = "Se deschide Catalogul…";
+  subInc.textContent = ls("viva_durata") ? "Estimare bazată pe ultima ta încărcare." : "Prima încărcare poate dura puțin mai mult.";
+  seteazaArc(0);
+  clearInterval(cronometru);
+  cronometru = setInterval(()=>{
+    if(terminat) return;
+    const e = Date.now() - t0, est = estimare();
+    const p = Math.min(0.95, 1 - Math.exp(-e / (est/2.2)));
+    seteazaArc(p);
+    const ramas = Math.ceil((est - e)/1000);
+    if(ramas > 0){ timpInc.textContent = "Mai durează aproximativ " + ramas + (ramas===1?" secundă":" secunde"); }
+    else if(e < 25000){ timpInc.textContent = "Durează puțin mai mult decât de obicei…"; }
+    else{
+      timpInc.textContent = "Încă se încarcă…";
+      subInc.textContent = "Dacă rămâne așa, apasă ⟳ Reîncarcă sau deschide „Vezi ce poți face” de mai jos.";
+      document.getElementById("ajutorDet").hidden = false;
+    }
+  }, 250);
+  iframe.src = "about:blank";
+  setTimeout(()=>{ iframe.src = CATALOG_VIVA_URL; }, 30);
+}
+iframe.addEventListener("load", ()=>{
+  if(iframe.src === "about:blank" || !iframe.getAttribute("src") || iframe.getAttribute("src")==="about:blank") return;
+  if(terminat) return;
+  terminat = true; clearInterval(cronometru);
+  try{ ls("viva_durata", String(Math.min(40000, Date.now() - t0))); }catch(_){}
+  seteazaArc(1);
+  titluInc.textContent = "Gata! 🎉"; timpInc.textContent = "Catalogul s-a încărcat";
+  setTimeout(()=>{ inc.classList.add("gata"); }, 450);
+});
+document.getElementById("btnReincarca").addEventListener("click", porneste);
+document.getElementById("btnAjutor").addEventListener("click", ()=>{ const d = document.getElementById("ajutorDet"); d.hidden = !d.hidden; });
+document.getElementById("btnMare").addEventListener("click", ()=>{
+  const f = document.getElementById("fereastra");
+  if(document.fullscreenElement){ document.exitFullscreen(); }
+  else if(f.requestFullscreen){ f.requestFullscreen().catch(()=>{}); }
+  else{ window.open(CATALOG_VIVA_URL, "_blank", "noopener"); }
+});
+porneste();
+
+/* ===== note ===== */
+const MATERII = ["Matematică","Purtare","Limba română","Limba engleză","Limba franceză","Istorie","Geografie","Biologie","Informatică și TIC","Educație fizică","Educație muzicală","Educație plastică","Religie","Altele"];
+document.getElementById("materie").innerHTML = MATERII.map(m=>`<option>${esc(m)}</option>`).join("");
+function citeste(){ try{ const v = JSON.parse(ls("note_personale")||"[]"); return Array.isArray(v)?v:[]; }catch(_){ return []; } }
+function salveaza(l){ ls("note_personale", JSON.stringify(l)); }
+const medie = a => a.length ? a.reduce((s,x)=>s+x,0)/a.length : null;
+const fmt = n => n===null ? "–" : n.toFixed(2).replace(".",",");
+
+function arata(){
+  const note = citeste();
+  const fara = note.filter(n=>n.materie!=="Purtare");
+  document.getElementById("nrNote").textContent = note.length;
+  document.getElementById("medieGen").textContent = fmt(medie(fara.map(n=>n.nota)));
+  const grup = {};
+  note.forEach(n=>{ (grup[n.materie] = grup[n.materie] || []).push(n); });
+  let best = null;
+  Object.keys(grup).forEach(m=>{ if(m==="Purtare") return; const md = medie(grup[m].map(n=>n.nota)); if(best===null || md>best.md) best = {m, md}; });
+  document.getElementById("cea").textContent = best ? fmt(best.md) : "–";
+  document.getElementById("ceaEt").textContent = best ? "cea mai bună: " + best.m : "cea mai bună materie";
+  const el = document.getElementById("listaNote");
+  if(!note.length){
+    el.innerHTML = `<div class="gol-msg"><b>Nicio notă adăugată încă.</b>Importă-le din Istoricul meu sau adaugă prima notă din formular.</div>`;
+    return;
+  }
+  const ordine = Object.keys(grup).sort((a,b)=>{ const ia=MATERII.indexOf(a), ib=MATERII.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib) || a.localeCompare(b,"ro"); });
+  el.innerHTML = ordine.map(m=>{
+    const l = grup[m].slice().sort((a,b)=>(b.data||"").localeCompare(a.data||"") || (b.ora||"").localeCompare(a.ora||""));
+    return `<div class="materie">
+      <header><h4>${esc(m)}</h4><span class="md">Media ${fmt(medie(l.map(n=>n.nota)))}</span></header>
+      <div class="note">${l.map(n=>`<span class="nota ${n.nota>=9?"f":""} ${n.nota<5?"mica":""}">${n.nota}${n.data?` <small>${esc(dataRo(n.data))}</small>`:""}<button type="button" data-sterge="${esc(n.id)}" aria-label="Șterge nota ${n.nota}">✕</button></span>`).join("")}</div>
+    </div>`;
+  }).join("");
+}
+
+document.getElementById("formNota").addEventListener("submit", e=>{
+  e.preventDefault();
+  const msg = document.getElementById("mesajNota");
+  const nota = parseInt(document.getElementById("nota").value, 10);
+  if(!(nota>=1 && nota<=10)){ msg.textContent = "Scrie o notă între 1 și 10."; msg.className = "raport-mesaj er"; return; }
+  const l = citeste();
+  l.push({ id: String(Date.now()) + Math.random().toString(36).slice(2,6), materie: document.getElementById("materie").value, nota, data: document.getElementById("dataNota").value });
+  salveaza(l);
+  document.getElementById("nota").value = "";
+  msg.textContent = "Nota a fost adăugată ✅"; msg.className = "raport-mesaj ok";
+  arata();
+});
+document.getElementById("listaNote").addEventListener("click", e=>{
+  const b = e.target.closest("[data-sterge]"); if(!b) return;
+  salveaza(citeste().filter(n=>n.id !== b.dataset.sterge));
+  arata();
+});
+
+/* ===== import din Istoricul meu ===== */
+const LUNI = {ianuarie:1,februarie:2,martie:3,aprilie:4,mai:5,iunie:6,iulie:7,august:8,septembrie:9,octombrie:10,noiembrie:11,decembrie:12};
+function parseazaIstoric(t){
+  t = t.replace(/\s+/g," ");
+  const acum = new Date(), rezultat = [];
+  const re = /(ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie)|(?:(\d{1,2})\s+)?(\d{2}:\d{2})\s+Nota\s+(\d{1,2})\s+la disciplina\s+(.+?),\s*notat de/gi;
+  let luna = null, zi = null, m;
+  while((m = re.exec(t))){
+    if(m[1]){ luna = LUNI[m[1].toLowerCase()]; zi = null; continue; }
+    if(m[2]) zi = parseInt(m[2],10);
+    const nota = parseInt(m[4],10);
+    if(!(nota>=1 && nota<=10)) continue;
+    let data = "";
+    if(luna && zi){
+      let an = acum.getFullYear();
+      if(luna > acum.getMonth()+1) an--;
+      data = an + "-" + String(luna).padStart(2,"0") + "-" + String(zi).padStart(2,"0");
+    }
+    rezultat.push({ materie: m[5].trim(), nota, data, ora: m[3] });
+  }
+  return rezultat;
+}
+document.getElementById("btnImport").addEventListener("click", ()=>{
+  const msg = document.getElementById("mesajImport");
+  const gasite = parseazaIstoric(document.getElementById("textIstoric").value);
+  if(!gasite.length){ msg.textContent = "Nu am găsit nicio notă. Copiază tot textul paginii Istoricul meu și încearcă din nou."; msg.className = "raport-mesaj er"; return; }
+  const l = citeste();
+  const cheie = n => [n.materie, n.nota, n.data, n.ora||""].join("|");
+  const existente = new Set(l.map(cheie));
+  let noi = 0;
+  gasite.forEach(n=>{
+    if(existente.has(cheie(n))) return;
+    existente.add(cheie(n));
+    l.push({ id: String(Date.now()) + Math.random().toString(36).slice(2,6), ...n });
+    noi++;
+  });
+  salveaza(l);
+  document.getElementById("textIstoric").value = "";
+  msg.textContent = noi ? `Am importat ${noi} ${noi===1?"notă":"note"}${gasite.length-noi?` (${gasite.length-noi} erau deja adăugate)`:""} ✅` : "Toate notele găsite erau deja adăugate.";
+  msg.className = "raport-mesaj ok";
+  arata();
+});
+arata();
+</script>
+</body>
+</html>

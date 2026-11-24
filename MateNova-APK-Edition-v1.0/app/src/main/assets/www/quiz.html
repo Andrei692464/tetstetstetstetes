@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz — MateNova</title>
+<meta name="description" content="Quizuri de matematică pentru clasa a V-a.">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0610">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="boot.js"></script>
+<script src="tema.js"></script>
+</head>
+<body>
+<header class="sus">
+  <div class="wrap bara">
+    <a class="logo" href="index.html"><i>✨</i>MateNova</a>
+    <span class="clasa">clasa a V-a</span>
+    <button class="chip" id="btnNume" type="button" title="Schimbă numele"></button>
+    <nav><a href="orar.html">Orar</a><a href="teme.html">Teme</a><a href="fise.html">Fișe</a><a href="proiecte.html">Proiecte</a><a href="quiz.html" aria-current="page">Quiz</a><a href="jocuri.html">Jocuri</a><a href="catalog.html">Catalog</a></nav>
+  </div>
+</header>
+<main class="wrap">
+<section>
+  <div class="cap capflex"><h2>Quiz</h2><span class="nr" id="nrQuiz"></span><p>Testele pregătite de profesor.</p></div>
+  <div class="quizuri" id="listaProf"></div>
+</section>
+<section>
+  <div class="cap"><h2>Quizuri de antrenament</h2><p>5 întrebări fiecare, ca să te pregătești.</p></div>
+  <div class="quizuri" id="listaQuiz"></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <span>MateNova — matematică pentru clasa a V-a.</span>
+    <a href="index.html">← pagina principală</a>
+  </div>
+</footer>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="titlu"><div class="panou"><div class="top"><h3 id="titlu"></h3><button class="inchide" id="inchide" aria-label="Închide">✕</button></div><div id="corp"></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="common.js"></script>
+<script src="quiz.js"></script>
+</body>
+</html>
